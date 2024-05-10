@@ -1,0 +1,128 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+
+
+dotenv.config();
+
+const PORT = process.env.PORT || 8000;
+const app = express();
+app.use(express.json());
+app.use(cors())
+
+const DB_url = process.env.DB_url;
+
+mongoose.connect(DB_url, {
+    dbName: 'TO-DO_App',
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('MongoDb is Connected Successfully');
+}).catch((err) => {
+    console.error('❌ Failed to connect to MongoDB:', err);
+    process.exit(1);
+});
+
+// Define todo schema
+const todoSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    }
+}, { versionKey: false });
+
+// Define todo model
+const Todo = mongoose.model('Todo', todoSchema);
+
+// Create todo
+app.post('/todos', async (req, res) => {
+    try {
+        const { title, description } = req.body;
+        const newTodo = new Todo({ title, description });
+        await newTodo.save();
+        res.status(201).json({ message: 'Todo created successfully' });
+    } catch (error) {
+        console.error('❌ Failed to create todo:', error);
+        res.status(500).json({ error: 'Failed to create todo' });
+    }
+});
+
+// Get all todos
+app.get('/todos', async (req, res) => {
+    try {
+        const todos = await Todo.find();
+        res.json(todos);
+    } catch (error) {
+        console.error('❌ Failed to fetch todos:', error);
+        res.status(500).json({ error: 'Failed to fetch todos' });
+    }
+});
+
+//update todo
+app.put('/todos/:id', async (req, res) => {
+    try {
+
+        const id = req.params.id;
+        const { title, description } = req.body;
+        const updatedTodo = await Todo.findByIdAndUpdate(id,
+            {
+                title, description
+            }, {
+            new: true
+        })
+
+        res.status(200).json(updatedTodo)
+
+        if (!updatedTodo) {
+            return res.status(404).json({ message: "Todo not found" });
+        }
+    } catch (error) {
+
+    }
+})
+
+//find One todo
+app.get('/todos/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const todo = await Todo.findById(id);
+
+        if (!todo) {
+            return res.status(404).json({ message: "Todo not found" }); // Return 404 if todo is not found
+        }
+
+        res.json(todo); // Return the todo
+    } catch (error) {
+        console.error('❌ Failed to fetch todo by ID:', error);
+        res.status(500).json({ error: 'Failed to fetch todo by ID' });
+    }
+});
+
+//Delete Todo
+
+app.delete('/todos/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Todo.findByIdAndDelete(id);
+        res.status(204).json({ message: "Todo deleted" });
+
+        
+
+
+    } catch (error) {
+        console.error('Failed Delete selected item ❌');
+        res.status(500).json({ error: 'Failed Delete selected item by ID' })
+    }
+
+})
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
