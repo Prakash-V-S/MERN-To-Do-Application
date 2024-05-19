@@ -1,6 +1,6 @@
 <h1 align="left">Hey 👋 What's up?</h1>
 <p align="left">My name is Prakash V S and I upgraded my ToDo App to use the MERN stack! This project originally started with React from the Guvi-Zen class Roadmap, specifically React - Day 5: React Hooks. This update incorporates MongoDB, Express.js, React, and Node.js to provide a full-stack application experience.</p>
-<p align="left">[Demo](https://mern-todo-app01.netlify.app/)</p> 
+<p align="left">Demo : https://mern-todo-app01.netlify.app/</p> 
 <h2 align="left">About</h2>
 <p align="left">📚 I created a ToDo App using the MERN stack.<br>📚 This project enhances my understanding of full-stack development by integrating MongoDB for database management, Express.js for backend logic, React.js for frontend user interface, and Node.js for server-side scripting.<br>📚 Learned about Conditional Rendering and useState Hooks in React.<br>📚 Managed source code using Git, deployed the backend on Render, and the frontend on Netlify.</p>
 <h2 align="left">I code with</h2>
